@@ -4,7 +4,6 @@
       <div class="navbar-container">
         <img src="../../assets/img/featurelogo (2).png" alt="Foto Rumah" class="navbar-logo" />
         <div class="menu navbar-actions">
-          <!-- Tombol ini diubah dari 'Profil Rumah' menjadi 'Melihat Profil RT' -->
           <button class="link" title="Melihat Profil RT" [routerLink]="['/profil-rt']" fill="clear">
             <span class="link-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256">
@@ -15,37 +14,15 @@
             <span class="link-title">Melihat Profil RT</span>
           </button>
 
-          <button type="button" class="link" title="Pengajuan Surat" [routerLink]="['/pengajuan-form']" fill="clear">
-            <span class="link-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M216,216H40a8,8,0,0,1-8-8V48a8,8,0,0,1,8-8H168l48,48Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-                <polyline points="168 40 168 96 216 96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-                <line x1="160" y1="136" x2="96" y2="136" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-                <line x1="160" y1="176" x2="96" y2="176" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-              </svg>
-            </span>
-            <span class="link-title">Pengajuan Surat</span>
-          </button>
-
-          <button type="button" class="link" title="Pengaduan & Aspirasi" [routerLink]="['/pengaduan']" fill="clear">
-            <span class="link-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M168,224H88a16,16,0,0,1-16-16V64a16,16,0,0,1,16-16h80a16,16,0,0,1,16,16V208A16,16,0,0,1,168,224Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-                <line x1="128" y1="208" x2="128" y2="208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-                <path d="M160,16H96a8,8,0,0,0-8,8V48H176V24A8,8,0,0,0,160,16Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-              </svg>
-            </span>
-            <span class="link-title">Pengaduan</span>
-          </button>
-
-          <!-- Tombol 'Riwayat Aktivitas' telah dihapus dari sini -->
-
           <button type="button" class="link main-menu-btn" title="Menu Utama" (click)="toggleMenu()">
             <span class="link-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256">
-                <line x1="40" y1="128" x2="216" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-                <line x1="40" y1="64" x2="216" y2="64" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
-                <line x1="40" y1="192" x2="216" y2="192" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" />
+                <line x1="40" y1="128" x2="216" y2="128" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="16" />
+                <line x1="40" y1="64" x2="216" y2="64" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="16" />
+                <line x1="40" y1="192" x2="216" y2="192" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="16" />
               </svg>
             </span>
             <span class="link-title">Menu Utama</span>
@@ -56,6 +33,11 @@
   </ion-header>
 
   <ion-content>
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+      <ion-refresher-content pullingText="Tarik untuk menyegarkan..." refreshingText="Menyegarkan...">
+      </ion-refresher-content>
+    </ion-refresher>
+
     <div class="dashboard-alas-horizontal">
       <div class="dashboard-main-row">
         <div class="dashboard-statistics-col">
@@ -78,7 +60,8 @@
               <div class="tamu-detail-horizontal">
                 <div class="tamu-nama-horizontal">{{ tamu.nama }}</div>
                 <div class="tamu-info-horizontal">No. KTP: {{ tamu.ktp }}</div>
-                <div class="tamu-info-horizontal">Tujuan: {{ tamu.tujuan }}</div> <div class="tamu-info-horizontal">Ke Rumah: {{ tamu.ke_rumah }}</div>
+                <div class="tamu-info-horizontal">Tujuan: {{ tamu.tujuan }}</div>
+                <div class="tamu-info-horizontal">Ke Rumah: {{ tamu.ke_rumah }}</div>
                 <div class="tamu-info-horizontal">Waktu Masuk: {{ tamu.waktuMasuk }}</div>
               </div>
             </div>
@@ -96,7 +79,8 @@
               <div class="tamu-detail-horizontal">
                 <div class="tamu-nama-horizontal">{{ tamu.nama }}</div>
                 <div class="tamu-info-horizontal">No. KTP: {{ tamu.ktp }}</div>
-                <div class="tamu-info-horizontal">Tujuan: {{ tamu.tujuan }}</div> <div class="tamu-info-horizontal">Ke Rumah: {{ tamu.ke_rumah }}</div>
+                <div class="tamu-info-horizontal">Tujuan: {{ tamu.tujuan }}</div>
+                <div class="tamu-info-horizontal">Ke Rumah: {{ tamu.ke_rumah }}</div>
                 <div class="tamu-info-horizontal">Waktu Keluar: {{ tamu.waktuKeluar }}</div>
               </div>
             </div>

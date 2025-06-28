@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
- // PERHATIKAN PATH RELATIFNYA! // PENTING: Import AuthService Anda di sini
+import { IonRefresher, ToastController, AlertController } from '@ionic/angular'; // Ditambahkan: IonRefresher, ToastController, AlertController
 
 // --- TAMBAHKAN INTERFACE INI ---
 interface ApiResponse<T> {
@@ -56,6 +56,9 @@ export class AdminMenuPage implements OnInit {
   // ======= LOGOUT MODAL STATE =======
   showLogoutConfirm = false; // Status tampilan modal konfirmasi logout
 
+  // Menambahkan ViewChild untuk IonRefresher
+  @ViewChild(IonRefresher) refresher!: IonRefresher;
+
   // ======= DATA STATISTIK =======
   statsData = [
     { title: 'Warga', value: 0, desc: 'Total Warga' },
@@ -82,7 +85,9 @@ export class AdminMenuPage implements OnInit {
     private router: Router,
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,
-    private authService: AuthService // PENTING: Suntikkan AuthService di sini
+    private authService: AuthService, // PENTING: Suntikkan AuthService di sini
+    private toastController: ToastController, // Disuntikkan: ToastController
+    private alertController: AlertController // Disuntikkan: AlertController (jika diperlukan untuk dialog konfirmasi lainnya)
   ) {}
 
   // ======= HOOK: SAAT KOMPONEN DI-INIT =======
@@ -92,85 +97,86 @@ export class AdminMenuPage implements OnInit {
   }
 
   // ======= FUNGSI UNTUK MEMUAT DATA DASHBOARD DARI API =======
-  loadDashboardData() {
-    // 1. Memuat statistik & tamu harian
-    this.http.get<ApiResponse<TamuData[]>>(`${this.apiUrl}/tamu-laporan/harian`)
-      .subscribe({
-        next: (response) => {
-          if (response.status === 'success' && response.data) {
-            const totalTamuHariIni = response.total_tamu || 0;
+  async loadDashboardData() { // Mengubah menjadi async untuk penggunaan await
+    console.log('Memuat data dashboard...');
+    try {
+      // 1. Memuat statistik & tamu harian
+      const response = await this.http.get<ApiResponse<TamuData[]>>(`${this.apiUrl}/tamu-laporan/harian`).toPromise();
 
-            // Memuat total warga
-            this.http.get<WargaData[]>(`${this.apiUrl}/warga-data`)
-              .subscribe({
-                next: (wargaResponse) => {
-                  if (wargaResponse) {
-                    const totalWarga = wargaResponse.length;
-                    this.statsData[0].value = totalWarga;
+      if (response && response.status === 'success' && response.data) {
+        const totalTamuHariIni = response.total_tamu || 0;
 
-                    this.wargaData = wargaResponse.map((warga: WargaData) => ({
-                      id: warga.id,
-                      nama: warga.nama,
-                      telp: warga.no_hp,
-                      alamat: warga.alamat_rumah,
-                      ktp: warga.nik,
-                      foto: 'https://www.gravatar.com/avatar/?d=mp' // Ganti jika ada URL foto warga dari backend
-                    }));
-                  }
-                },
-                error: (error) => {
-                  console.error('Gagal memuat data warga:', error);
-                }
-              });
+        // Memuat total warga
+        const wargaResponse = await this.http.get<WargaData[]>(`${this.apiUrl}/warga-data`).toPromise();
+        if (wargaResponse) {
+          const totalWarga = wargaResponse.length;
+          this.statsData[0].value = totalWarga;
 
-            // Memuat total tamu bulan ini
-            this.http.get<ApiResponse<MonthlyRekapData[]>>(`${this.apiUrl}/tamu-laporan/bulanan-rekap`)
-              .subscribe({
-                next: (monthlyResponse) => {
-                  if (monthlyResponse.status === 'success' && monthlyResponse.data) {
-                    const currentMonth = new Date().getMonth() + 1;
-                    const tamuBulanIniEntry = monthlyResponse.data.find((item: MonthlyRekapData) => item.bulan_angka === currentMonth);
-                    if (tamuBulanIniEntry) {
-                      this.statsData[2].value = tamuBulanIniEntry.total_tamu_masuk;
-                    }
-                  }
-                },
-                error: (error) => {
-                  console.error('Gagal memuat rekap bulanan:', error);
-                }
-              });
-
-            this.statsData[1].value = totalTamuHariIni;
-
-            // Filter tamu masuk dan keluar untuk tampilan singkat
-            const allTamuHariIni = response.data;
-            this.tamuHariIni = allTamuHariIni
-              .filter((tamu: TamuData) => tamu.status === 'masuk')
-              .slice(0, 3)
-              .map((tamu: TamuData) => ({
-                nama: tamu.nama_tamu,
-                ktp: tamu.no_identitas,
-                tujuan: tamu.alasan_kunjungan,
-                foto: 'https://placehold.co/100x100/FF5733/FFFFFF?text=Tamu', // Placeholder foto
-                ke_rumah: tamu.ke_rumah // Memastikan ke_rumah disertakan
-              }));
-
-            this.tamuKeluar = allTamuHariIni
-              .filter((tamu: TamuData) => tamu.status === 'keluar')
-              .slice(0, 3)
-              .map((tamu: TamuData) => ({
-                nama: tamu.nama_tamu,
-                ktp: tamu.no_identitas,
-                tujuan: tamu.alasan_kunjungan,
-                foto: 'https://placehold.co/100x100/33FF57/FFFFFF?text=Keluar', // Placeholder foto
-                ke_rumah: tamu.ke_rumah // Memastikan ke_rumah disertakan
-              }));
-          }
-        },
-        error: (error) => {
-          console.error('Gagal memuat rekap harian:', error);
+          this.wargaData = wargaResponse.map((warga: WargaData) => ({
+            id: warga.id,
+            nama: warga.nama,
+            telp: warga.no_hp,
+            alamat: warga.alamat_rumah,
+            ktp: warga.nik,
+            foto: 'https://www.gravatar.com/avatar/?d=mp' // Ganti jika ada URL foto warga dari backend
+          }));
         }
-      });
+
+        // Memuat total tamu bulan ini
+        const monthlyResponse = await this.http.get<ApiResponse<MonthlyRekapData[]>>(`${this.apiUrl}/tamu-laporan/bulanan-rekap`).toPromise();
+        if (monthlyResponse && monthlyResponse.status === 'success' && monthlyResponse.data) {
+          const currentMonth = new Date().getMonth() + 1;
+          const tamuBulanIniEntry = monthlyResponse.data.find((item: MonthlyRekapData) => item.bulan_angka === currentMonth);
+          if (tamuBulanIniEntry) {
+            this.statsData[2].value = tamuBulanIniEntry.total_tamu_masuk;
+          }
+        }
+
+        this.statsData[1].value = totalTamuHariIni;
+
+        // Filter tamu masuk dan keluar untuk tampilan singkat
+        const allTamuHariIni = response.data;
+        this.tamuHariIni = allTamuHariIni
+          .filter((tamu: TamuData) => tamu.status.toLowerCase() === 'masuk') // Pastikan case-insensitive
+          .slice(0, 3)
+          .map((tamu: TamuData) => ({
+            nama: tamu.nama_tamu,
+            ktp: tamu.no_identitas,
+            tujuan: tamu.alasan_kunjungan,
+            foto: 'https://placehold.co/100x100/FF5733/FFFFFF?text=Tamu', // Placeholder foto
+            ke_rumah: tamu.ke_rumah // Memastikan ke_rumah disertakan
+          }));
+
+        this.tamuKeluar = allTamuHariIni
+          .filter((tamu: TamuData) => tamu.status.toLowerCase() === 'keluar') // Pastikan case-insensitive
+          .slice(0, 3)
+          .map((tamu: TamuData) => ({
+            nama: tamu.nama_tamu,
+            ktp: tamu.no_identitas,
+            tujuan: tamu.alasan_kunjungan,
+            foto: 'https://placehold.co/100x100/33FF57/FFFFFF?text=Keluar', // Placeholder foto
+            ke_rumah: tamu.ke_rumah // Memastikan ke_rumah disertakan
+          }));
+      }
+    } catch (error) {
+      console.error('Gagal memuat data dashboard:', error);
+      // Anda bisa menambahkan pesan error ke UI jika perlu
+      this.presentToast('Gagal memuat data dashboard. Silakan coba lagi.', 'danger');
+    }
+  }
+
+  // ======= HANDLER PULL-TO-REFRESH =======
+  async handleRefresh(event: any) {
+    console.log('Melakukan pull-to-refresh pada dashboard...');
+    try {
+      await this.loadDashboardData(); // Panggil kembali fungsi pemuatan data
+      this.presentToast('Data dashboard berhasil dimuat ulang.', 'success');
+    } catch (error) {
+      console.error('Gagal memuat ulang data dashboard:', error);
+      this.presentToast('Gagal memuat ulang data dashboard.', 'danger');
+    } finally {
+      event.target.complete(); // Selesaikan animasi refresher
+    }
   }
 
   // ======= TOGGLE SIDEBAR MENU =======
@@ -180,7 +186,7 @@ export class AdminMenuPage implements OnInit {
 
   // ======= ARAHKAN KE HALAMAN PROFIL =======
   goToProfile() {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/profil-satpam']); // Mengubah ke /profil-satpam sesuai menu
   }
 
   // ======= FUNGSI BARU: ARAHKAN UNTUK MENGIRIM PESAN KE WARGA TERTENTU =======
@@ -215,6 +221,7 @@ export class AdminMenuPage implements OnInit {
         // AuthService sudah menangani navigasi ke /login dan membersihkan state
         this.showLogoutConfirm = false;
         this.menuOpen = false;
+        // Tidak perlu router.navigate di sini jika AuthService sudah menanganinya
       },
       error: (err) => {
         console.error('Admin logout failed:', err);
@@ -228,5 +235,16 @@ export class AdminMenuPage implements OnInit {
   // ======= STOP PROPAGATION FOR MODAL CARD =======
   stopPropagation(event: Event) {
     event.stopPropagation(); // Mencegah klik pada kartu modal agar tidak menutupnya
+  }
+
+  // Fungsi utilitas untuk menampilkan Toast
+  async presentToast(message: string, color: string = 'primary') {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      color: color,
+      position: 'bottom',
+    });
+    toast.present();
   }
 }

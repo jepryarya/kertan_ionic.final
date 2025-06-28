@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
+import { LoadingController, AlertController } from '@ionic/angular'; // Import LoadingController dan AlertController
 
 // --- INTERFACE YANG DIBUTUHKAN ---
 interface ApiResponse<T> {
@@ -77,99 +78,105 @@ export class UserMenuPage implements OnInit {
     private router: Router,
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingController: LoadingController, // Injeksi LoadingController
+    private alertController: AlertController // Injeksi AlertController
   ) {}
 
   ngOnInit() {
     this.menuOpen = false;
-    this.loadUserDashboardData();
+    this.loadUserDashboardData(); // Memuat data saat halaman pertama kali diinisialisasi
   }
 
-  loadUserDashboardData() {
-    // 1. Memuat total warga dan data warga sekitar
-   this.http.get<WargaData[]>(`${this.apiUrl}/warga-data`)
-      .subscribe({
-        next: (wargaResponse) => {
-          if (wargaResponse) {
-            const totalWarga = wargaResponse.length;
-            this.userStatsData[0].value = totalWarga; // Ini akan tetap menjadi 'Total Warga'
+  async loadUserDashboardData() { // Ubah menjadi async untuk menggunakan await
+    const loading = await this.loadingController.create({
+      message: 'Memuat data...',
+      spinner: 'crescent',
+    });
+    await loading.present();
 
-            // Baris ini tidak lagi diperlukan karena userStatsData[2] sudah dihapus
-            // this.userStatsData[2].value = totalWarga;
-            // this.userStatsData[2].title = 'Jumlah Warga';
-            // this.userStatsData[2].desc = 'Warga Terdaftar';
+    try {
+      // Memuat total warga dan data warga sekitar
+      const wargaResponse = await this.http.get<WargaData[]>(`${this.apiUrl}/warga-data`).toPromise();
+      if (wargaResponse) {
+        const totalWarga = wargaResponse.length;
+        this.userStatsData[0].value = totalWarga;
 
-            this.wargaData = wargaResponse.map((warga: WargaData) => ({
-              id: warga.id,
-              nama: warga.nama,
-              telp: warga.no_hp,
-              alamat: warga.alamat_rumah,
-              ktp: warga.nik,
-              foto: 'https://www.gravatar.com/avatar/?d=mp' // Placeholder foto
-            }));
-          }
-        },
-        error: (error) => {
-          console.error('Gagal memuat data warga:', error);
-        }
+        this.wargaData = wargaResponse.map((warga: WargaData) => ({
+          id: warga.id,
+          nama: warga.nama,
+          telp: warga.no_hp,
+          alamat: warga.alamat_rumah,
+          ktp: warga.nik,
+          foto: 'https://www.gravatar.com/avatar/?d=mp' // Placeholder foto
+        }));
+      }
+
+      // Memuat data tamu hari ini, tamu terakhir ke rumah, dan tamu keluar terbaru
+      const tamuResponse = await this.http.get<ApiResponse<TamuData[]>>(`${this.apiUrl}/tamu-laporan/harian`).toPromise();
+      console.log('API Response (User Menu):', tamuResponse);
+      if (tamuResponse && tamuResponse.status === 'success' && tamuResponse.data) {
+        const allTamuHariIni = tamuResponse.data;
+
+        this.userStatsData[1].value = tamuResponse.total_tamu || 0;
+
+        const tamuKeRumahPengguna = allTamuHariIni.filter(tamu =>
+          tamu.ke_rumah && tamu.status === 'masuk'
+        );
+
+        console.log('Tamu masuk terbaru setelah filter (User):', tamuKeRumahPengguna);
+
+        this.tamuMasukTerbaru = tamuKeRumahPengguna
+          .sort((a, b) => new Date(b.waktu_masuk).getTime() - new Date(a.waktu_masuk).getTime())
+          .slice(0, 3)
+          .map((tamu: TamuData) => ({
+            nama: tamu.nama_tamu,
+            ktp: tamu.no_identitas,
+            tujuan: tamu.alasan_kunjungan,
+            foto: 'https://placehold.co/100x100/FF5733/FFFFFF?text=Tamu',
+            waktuMasuk: new Date(tamu.waktu_masuk).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            ke_rumah: tamu.ke_rumah
+          }));
+
+        const tamuKeluarHariIni = allTamuHariIni.filter(tamu => tamu.status === 'keluar');
+
+        console.log('Tamu keluar terbaru setelah filter (User):', tamuKeluarHariIni);
+
+        this.tamuKeluar = tamuKeluarHariIni
+          .sort((a, b) => {
+            const timeA = a.waktu_keluar ? new Date(a.waktu_keluar).getTime() : 0;
+            const timeB = b.waktu_keluar ? new Date(b.waktu_keluar).getTime() : 0;
+            return timeB - timeA;
+          })
+          .slice(0, 3)
+          .map((tamu: TamuData) => ({
+            nama: tamu.nama_tamu,
+            ktp: tamu.no_identitas,
+            tujuan: tamu.alasan_kunjungan,
+            foto: 'https://placehold.co/100x100/33FF57/FFFFFF?text=Keluar',
+            waktuKeluar: tamu.waktu_keluar ? new Date(tamu.waktu_keluar).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Belum Keluar',
+            ke_rumah: tamu.ke_rumah
+          }));
+      }
+    } catch (error) {
+      console.error('Gagal memuat data dashboard:', error);
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Gagal memuat data. Mohon coba lagi.',
+        buttons: ['OK']
       });
+      await alert.present();
+    } finally {
+      await loading.dismiss(); // Pastikan loading dihilangkan terlepas dari hasil
+    }
+  }
 
-    // 2. Memuat data tamu hari ini, tamu terakhir ke rumah, dan tamu keluar terbaru
-    this.http.get<ApiResponse<TamuData[]>>(`${this.apiUrl}/tamu-laporan/harian`)
-      .subscribe({
-        next: (response) => {
-          console.log('API Response (User Menu):', response);
-          if (response.status === 'success' && response.data) {
-            const allTamuHariIni = response.data;
-
-            // Mengisi statistik "Tamu Hari Ini"
-            this.userStatsData[1].value = response.total_tamu || 0; // Ini akan tetap menjadi 'Tamu Hari Ini'
-
-            console.log('All Tamu Hari Ini (raw from API):', allTamuHariIni);
-
-            const tamuKeRumahPengguna = allTamuHariIni.filter(tamu =>
-              tamu.ke_rumah && tamu.status === 'masuk'
-            );
-
-            console.log('Tamu masuk terbaru setelah filter (User):', tamuKeRumahPengguna);
-
-            this.tamuMasukTerbaru = tamuKeRumahPengguna
-              .sort((a, b) => new Date(b.waktu_masuk).getTime() - new Date(a.waktu_masuk).getTime())
-              .slice(0, 3)
-              .map((tamu: TamuData) => ({
-                nama: tamu.nama_tamu,
-                ktp: tamu.no_identitas,
-                tujuan: tamu.alasan_kunjungan,
-                foto: 'https://placehold.co/100x100/FF5733/FFFFFF?text=Tamu',
-                waktuMasuk: new Date(tamu.waktu_masuk).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                ke_rumah: tamu.ke_rumah
-              }));
-
-            const tamuKeluarHariIni = allTamuHariIni.filter(tamu => tamu.status === 'keluar');
-
-            console.log('Tamu keluar terbaru setelah filter (User):', tamuKeluarHariIni);
-
-            this.tamuKeluar = tamuKeluarHariIni
-              .sort((a, b) => {
-                  const timeA = a.waktu_keluar ? new Date(a.waktu_keluar).getTime() : 0;
-                  const timeB = b.waktu_keluar ? new Date(b.waktu_keluar).getTime() : 0;
-                  return timeB - timeA;
-              })
-              .slice(0, 3)
-              .map((tamu: TamuData) => ({
-                nama: tamu.nama_tamu,
-                ktp: tamu.no_identitas,
-                tujuan: tamu.alasan_kunjungan,
-                foto: 'https://placehold.co/100x100/33FF57/FFFFFF?text=Keluar',
-                waktuKeluar: tamu.waktu_keluar ? new Date(tamu.waktu_keluar).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Belum Keluar',
-                ke_rumah: tamu.ke_rumah
-              }));
-          }
-        },
-        error: (error) => {
-          console.error('Gagal memuat data tamu:', error);
-        }
-      });
+  // --- Fungsi Handle Refresh ---
+  async handleRefresh(event: any) {
+    console.log('Memulai operasi refresh...');
+    await this.loadUserDashboardData(); // Panggil fungsi untuk memuat ulang data
+    event.target.complete(); // Beri sinyal kepada refresher bahwa operasi telah selesai
+    console.log('Refresh selesai!');
   }
 
   // ======= FUNGSI-FUNGSI NAVIGASI DAN UI =======
@@ -194,6 +201,7 @@ export class UserMenuPage implements OnInit {
         console.log('User has logged out via AuthService.');
         this.showLogoutConfirm = false;
         this.menuOpen = false;
+        this.router.navigateByUrl('/login'); // Redirect ke halaman login setelah logout
       },
       error: (err) => {
         console.error('Logout failed:', err);
