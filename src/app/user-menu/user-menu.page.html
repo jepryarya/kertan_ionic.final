@@ -41,19 +41,19 @@
     <div class="dashboard-alas-horizontal">
       <div class="dashboard-main-row">
         <div class="dashboard-statistics-col">
-          <div class="summary-box-vertical" *ngFor="let stat of userStatsData | slice:0:3">
+          <div class="summary-box-vertical" *ngFor="let stat of userStatsData">
             <div class="summary-title-vertical">{{ stat.title }}</div>
             <div class="summary-value-vertical">{{ stat.value }}</div>
             <div class="summary-desc-vertical">{{ stat.desc }}</div>
           </div>
         </div>
         <div class="dashboard-tamu-col">
-          <div class="tamu-carousel-title">Tamu Terakhir ke Rumah Anda</div>
+          <div class="tamu-carousel-title">Tamu Datang Hari Ini</div>
           <div class="tamu-carousel-scroll">
             <div class="no-data-message" *ngIf="!tamuMasukTerbaru || tamuMasukTerbaru.length === 0">
               Belum ada tamu yang tercatat masuk ke rumah Anda.
             </div>
-            <div class="tamu-card-horizontal" *ngFor="let tamu of tamuMasukTerbaru | slice:0:3">
+            <div class="tamu-card-horizontal" *ngFor="let tamu of tamuMasukTerbaru">
               <div class="tamu-foto-box-horizontal">
                 <img [src]="tamu.foto" alt="Foto Tamu" class="tamu-foto-horizontal" />
               </div>
