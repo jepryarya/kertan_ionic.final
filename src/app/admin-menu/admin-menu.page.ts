@@ -138,7 +138,6 @@ export class AdminMenuPage implements OnInit {
         const allTamuHariIni = response.data;
         this.tamuHariIni = allTamuHariIni
           .filter((tamu: TamuData) => tamu.status.toLowerCase() === 'masuk') // Pastikan case-insensitive
-          .slice(0, 3)
           .map((tamu: TamuData) => ({
             nama: tamu.nama_tamu,
             ktp: tamu.no_identitas,
@@ -149,7 +148,6 @@ export class AdminMenuPage implements OnInit {
 
         this.tamuKeluar = allTamuHariIni
           .filter((tamu: TamuData) => tamu.status.toLowerCase() === 'keluar') // Pastikan case-insensitive
-          .slice(0, 3)
           .map((tamu: TamuData) => ({
             nama: tamu.nama_tamu,
             ktp: tamu.no_identitas,
