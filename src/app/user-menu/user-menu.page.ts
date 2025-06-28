@@ -128,7 +128,6 @@ export class UserMenuPage implements OnInit {
 
         this.tamuMasukTerbaru = tamuKeRumahPengguna
           .sort((a, b) => new Date(b.waktu_masuk).getTime() - new Date(a.waktu_masuk).getTime())
-          .slice(0, 3)
           .map((tamu: TamuData) => ({
             nama: tamu.nama_tamu,
             ktp: tamu.no_identitas,
@@ -148,7 +147,6 @@ export class UserMenuPage implements OnInit {
             const timeB = b.waktu_keluar ? new Date(b.waktu_keluar).getTime() : 0;
             return timeB - timeA;
           })
-          .slice(0, 3)
           .map((tamu: TamuData) => ({
             nama: tamu.nama_tamu,
             ktp: tamu.no_identitas,
