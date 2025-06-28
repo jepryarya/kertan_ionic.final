@@ -1,0 +1,62 @@
+// src/theme/variables.scss
+
+// Ionic Variables and Theming.
+/** Ionic CSS Variables **/
+:root {
+  /* Color Theme */
+  // Comment out default Ionic colors to use custom ones
+  // --ion-color-primary: #3880ff;
+  // --ion-color-primary-rgb: 56, 128, 255;
+  // ... (other default Ionic variables) ...
+
+  /* Custom Color and Shadow Variables for your App */
+  --ion-color-primary: #1663b5; // Biru utama (dari dashboard-main-row)
+  --ion-color-primary-rgb: 22, 99, 181;
+  --ion-color-primary-shade: #13559d;
+  --ion-color-primary-tint: #2d70c9; /* Perbaiki tint menjadi #2d70c9 (biru muda) */
+
+  --ion-color-secondary: #007bff; /* Contoh warna secondary */
+  --ion-color-secondary-rgb: 0, 123, 255;
+  --ion-color-secondary-shade: #0069d9;
+  --ion-color-secondary-tint: #1a8bff;
+
+  --ion-color-tertiary: #6c757d; /* Contoh warna tertiary */
+  --ion-color-tertiary-rgb: 108, 117, 125;
+  --ion-color-tertiary-shade: #5a6268;
+  --ion-color-tertiary-tint: #7a8288;
+
+  --ion-color-success: #28a745;
+  --ion-color-success-rgb: 40, 167, 69;
+  --ion-color-success-shade: #24973e;
+  --ion-color-success-tint: #3eb55b;
+
+  --ion-color-warning: #ffc107;
+  --ion-color-warning-rgb: 255, 193, 7;
+  --ion-color-warning-shade: #e0a800;
+  --ion-color-warning-tint: #ffcd23;
+
+  --ion-color-danger: #dc3545;
+  --ion-color-danger-rgb: 220, 53, 69;
+  --ion-color-danger-shade: #c82333;
+  --ion-color-danger-tint: #e34857;
+
+  --ion-color-light: #f8f9fa;
+  --ion-color-light-rgb: 248, 249, 250;
+  --ion-color-light-shade: #dae0e5;
+  --ion-color-light-tint: #f9fafa;
+
+  --ion-color-medium: #6c757d;
+  --ion-color-medium-rgb: 108, 117, 125;
+  --ion-color-medium-shade: #5a6268;
+  --ion-color-medium-tint: #7a8288;
+
+  --ion-color-dark: #343a40;
+  --ion-color-dark-rgb: 52, 58, 64;
+  --ion-color-dark-shade: #23272b;
+  --ion-color-dark-tint: #4b545d;
+
+  /* Custom Shadows */
+  --soft-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --medium-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  --strong-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}

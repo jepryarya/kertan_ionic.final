@@ -1,0 +1,150 @@
+/* admin-data-tamu.page.scss */
+
+/* --- Header Toolbar Styles --- */
+.admin-navbar-top {
+  --background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+
+  ion-title {
+    font-weight: bold;
+  }
+
+  ion-back-button {
+    --color: var(--ion-color-primary-contrast);
+  }
+}
+
+/* --- Table Container for Horizontal Scrolling --- */
+.responsive-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 16px;
+  border: 1px solid var(--ion-color-light);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding-bottom: 10px;
+  background: #e6e6e6; /* Latar belakang abu-abu untuk seluruh wrapper */
+}
+
+/* --- Main Table Styles (ion-grid) --- */
+.tamu-table {
+  min-width: 1100px;
+  width: 100%;
+  background: #e6e6e6; /* Pastikan tabel juga memiliki latar belakang abu-abu */
+}
+
+/* --- Table Header Styles --- */
+.table-header {
+  background: #007bff; /* Biru untuk header */
+  color: #ffffff; /* Teks putih untuk kontras */
+  font-weight: bold;
+  text-align: left;
+  display: flex;
+  flex-wrap: nowrap;
+  line-height: 1.2;
+}
+
+.table-header ion-col {
+  padding: 12px 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  min-width: 80px;
+  background: #007bff; /* Pastikan setiap kolom header biru */
+}
+
+.table-header ion-col:last-child {
+  border-right: none;
+}
+
+/* Pastikan header kolom aksi juga biru */
+.action-col-header {
+  background: #007bff !important; /* Biru untuk header kolom aksi */
+  color: #ffffff;
+  text-align: center;
+  white-space: nowrap;
+  min-width: 320px;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+/* --- Table Row Styles --- */
+.table-row {
+  border-bottom: 1px solid var(--ion-color-light);
+  display: flex;
+  flex-wrap: nowrap;
+  background: #e6e6e6; /* Latar belakang abu-abu untuk seluruh baris */
+}
+
+.table-row:nth-child(even) ion-col {
+  background: #d3d3d3 !important; /* Abu-abu lebih gelap untuk baris genap */
+}
+
+.table-row:nth-child(odd) ion-col {
+  background: #e6e6e6 !important; /* Abu-abu terang untuk baris ganjil */
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row ion-col {
+  padding: 10px;
+  text-align: left;
+  border-right: 1px solid var(--ion-color-light);
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  min-width: 80px;
+}
+
+.table-row ion-col:last-child {
+  border-right: none;
+}
+
+/* --- Action Column Styles --- */
+.action-col {
+  background: inherit !important; /* Warna mengikuti baris (genap/ganjil) */
+  text-align: center;
+  white-space: nowrap;
+  min-width: 320px;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+.action-col .action-buttons-group {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background: transparent; /* Pastikan tidak ada latar belakang tambahan */
+}
+
+.action-col ion-button {
+  margin: 0;
+  height: 28px;
+  font-size: 0.75rem;
+  padding: 0 8px;
+  min-width: fit-content;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+/* --- Media Queries for Mobile Responsiveness --- */
+@media (max-width: 767px) {
+  .action-col .action-buttons-group {
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .table-header ion-col,
+  .table-row ion-col {
+    font-size: 0.9em;
+  }
+}

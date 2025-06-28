@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/user-menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Profil Ketua RT</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Indikator Loading -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Memuat data RT...</p>
+  </div>
+
+  <!-- Pesan Error -->
+  <div *ngIf="errorMessage" class="error-message">
+    <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+    <p>{{ errorMessage }}</p>
+    <ion-button (click)="loadRtData()" expand="block" fill="outline" color="primary">Coba Lagi</ion-button>
+  </div>
+
+  <!-- Tampilan Data RT dalam Card -->
+  <div *ngIf="rtData && !isLoading && !errorMessage" class="rt-card-container">
+    <ion-card>
+      <ion-item lines="none" class="ion-justify-content-center ion-padding-top">
+        <ion-avatar class="rt-profile-avatar">
+          <img [src]="rtData.foto_url || 'https://placehold.co/150x150/CCCCCC/333333?text=RT+Foto'" alt="Foto Ketua RT" />
+        </ion-avatar>
+      </ion-item>
+
+      <ion-card-header class="ion-text-center">
+        <ion-card-title>{{ rtData.nama }}</ion-card-title>
+        <ion-card-subtitle>Ketua RT</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-list lines="none">
+          <ion-item>
+            <ion-label>
+              <h3><ion-icon name="call-outline"></ion-icon> No. HP:</h3>
+              <p>{{ rtData.no_hp }}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>
+              <h3><ion-icon name="calendar-outline"></ion-icon> Periode Jabatan:</h3>
+              <p>{{ getPeriodText() }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <!-- Tombol Google Maps dengan efek 3D -->
+        <ion-button *ngIf="rtData.Maps_link" expand="block" class="ion-margin-top map-button-3d" (click)="openMapsLink()">
+          <ion-icon slot="start" name="map-outline"></ion-icon>
+          Lihat Lokasi di Google Maps
+        </ion-button>
+        <ion-item *ngIf="!rtData.Maps_link" lines="none" class="ion-margin-top no-map-link">
+            <ion-label class="ion-text-center">
+                <ion-icon name="map-outline"></ion-icon>
+                <p>Link Google Maps tidak tersedia.</p>
+            </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Pesan jika tidak ada data RT setelah loading dan tidak ada error -->
+  <div *ngIf="!rtData && !isLoading && !errorMessage" class="no-data-message">
+    <ion-icon name="information-circle-outline"></ion-icon>
+    <p>Tidak ada data RT yang terdaftar.</p> <!-- Teks ini diubah -->
+    <ion-button (click)="loadRtData()" expand="block" fill="outline" color="primary">Muat Ulang Data</ion-button>
+  </div>
+</ion-content>

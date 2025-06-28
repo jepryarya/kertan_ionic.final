@@ -1,0 +1,72 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin-menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Registrasi Tamu</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Registrasi Tamu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="ion-padding">
+    <form [formGroup]="registrasiForm" (ngSubmit)="onSubmit()">
+      <ion-list>
+        <ion-item>
+          <ion-input label="Nama Lengkap" labelPlacement="floating" formControlName="nama" placeholder="Masukkan nama lengkap"></ion-input>
+        </ion-item>
+        <div *ngIf="registrasiForm.get('nama')?.invalid && registrasiForm.get('nama')?.dirty" class="validation-message">
+          Nama wajib diisi.
+        </div>
+
+        <ion-item class="ion-margin-top">
+          <ion-input label="Nomor Identitas (KTP/SIM/Paspor)" labelPlacement="floating" formControlName="no_identitas" placeholder="Masukkan nomor identitas"></ion-input>
+        </ion-item>
+        <div *ngIf="registrasiForm.get('no_identitas')?.invalid && registrasiForm.get('no_identitas')?.dirty" class="validation-message">
+          Nomor Identitas wajib diisi.
+        </div>
+
+        <ion-item class="ion-margin-top">
+          <ion-button expand="block" (click)="takePhoto()">
+            <ion-icon slot="start" name="camera"></ion-icon>
+            Ambil Foto KTP
+          </ion-button>
+        </ion-item>
+        <div *ngIf="fotoKtpPreview" class="ion-padding-vertical ion-text-center">
+          <img [src]="fotoKtpPreview" alt="Pratinjau Foto KTP">
+        </div>
+
+        <ion-item class="ion-margin-top">
+          <ion-textarea label="Alamat Asal" labelPlacement="floating" formControlName="alamat_asal" placeholder="Masukkan alamat asal"></ion-textarea>
+        </ion-item>
+        <div *ngIf="registrasiForm.get('alamat_asal')?.invalid && registrasiForm.get('alamat_asal')?.dirty" class="validation-message">
+          Alamat Asal wajib diisi.
+        </div>
+
+        <ion-item class="ion-margin-top">
+          <ion-input label="Bertamu Ke Rumah/Unit" labelPlacement="floating" formControlName="ke_rumah" placeholder="Contoh: Bpk. Andi, Blok A-12"></ion-input>
+        </ion-item>
+        <div *ngIf="registrasiForm.get('ke_rumah')?.invalid && registrasiForm.get('ke_rumah')?.dirty" class="validation-message">
+          Tujuan rumah wajib diisi.
+        </div>
+
+        <ion-item class="ion-margin-top">
+          <ion-textarea label="Alasan Kunjungan" labelPlacement="floating" formControlName="alasan_kunjungan" placeholder="Contoh: Kunjungan keluarga, pengiriman paket, perbaikan AC"></ion-textarea>
+        </ion-item>
+        <div *ngIf="registrasiForm.get('alasan_kunjungan')?.invalid && registrasiForm.get('alasan_kunjungan')?.dirty" class="validation-message">
+          Alasan Kunjungan wajib diisi.
+        </div>
+
+        <ion-button expand="block" type="submit" [disabled]="registrasiForm.invalid" class="ion-margin-top">
+          <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+          Daftarkan Tamu
+        </ion-button>
+      </ion-list>
+    </form>
+  </div>
+</ion-content>

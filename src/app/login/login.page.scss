@@ -1,0 +1,576 @@
+// awal background slider 
+// Elemen latar belakang otomatis ganti gambar (slideshow)
+.background-jalan {
+  position: fixed; // Tetap di tempat walau user scroll
+  top: 0;
+  left: 0;
+  width: 100vw; // Penuh layar horizontal
+  height: 100vh; // Penuh layar vertikal
+  z-index: 0; // Paling bawah dari semua elemen
+  background-size: cover; // Ukuran gambar menyesuaikan penuh
+  background-position: center; // Pusatkan gambar
+  filter: brightness(0.6); // Gelapin sedikit supaya konten di atas tetap jelas
+  animation: bg-change 20s infinite; // Animasi ubah background setiap 5 detik
+  filter: blur(10px);
+}
+
+// Animasi ganti background image tanpa transisi
+@keyframes bg-change {
+  0% {
+    background-image: url('../../assets/img/slide_img/cluster1.jpg');
+  }
+  25% {
+    background-image: url('../../assets/img/slide_img/cluster2.jpg');
+  }
+  50% {
+    background-image: url('../../assets/img/slide_img/cluster3.jpg');
+  }
+  75% {
+    background-image: url('../../assets/img/slide_img/cluster4.jpg');
+  }
+  100% {
+    background-image: url('../../assets/img/slide_img/cluster1.jpg');
+  }
+}
+
+
+// akhir gambar background slider
+
+// login background ngambang
+.login-background {
+  position: relative;              
+  width: 390px;                   
+  height: 160px;                  
+  margin-bottom: 20px;            
+  margin-top: 20px;               
+  left: 50%;                      
+  transform: translateX(-50%);    
+  border-radius: 20px;            
+  overflow: hidden;              
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 0;
+
+  // Background blur dipisah agar bisa dikontrol sendiri
+  .bg-blur {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;                 
+    background-image: url('../../assets/img/perumahan.jpeg');
+    background-size: cover;      
+    background-repeat: no-repeat;
+    background-position: center;  
+    filter: blur(4px);            // efek blur
+    opacity: 0.7;                 // transparansi (bisa disesuaikan)
+    z-index: 1;                   
+  }
+
+  // Gambar utama (logo) dengan animasi naik turun
+  .logo-animasi {
+  position: absolute;
+  top: 30px;                    
+  left: 50%;                    
+  transform: translateX(-50%);  
+  width: 150px;                 
+  height: 80px;
+  background-image: url('../../assets/img/LogoCompanyKedua.png'); 
+  background-size: cover;       
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 20px;          
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4); 
+  z-index: 2;                   
+  animation: floatLogo 3s ease-in-out infinite; 
+
+  // Tambahan warna background di belakang logo
+  background-color: rgba(255, 255, 255, 0.7); // Warna putih transparan (bisa disesuaikan)
+  backdrop-filter: blur(0px); // tambahan efek kaca blur (opsional)
+  border: 2px solid rgba(255,255,255,0.4); // tambahan border (opsional)
+  }
+}
+
+// Animasi naik turun untuk logo utama
+@keyframes floatLogo {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
+
+
+/* Gambar di atas akhir gambar login */
+
+// bawah ini adalah codingan card login
+// Card login dengan efek 3D dan blur
+
+/* Biar ion-content dan container-nya jadi flex container yang memenuhi layar,
+   dan kontennya di-center secara horizontal dan vertikal */
+// Kontainer utama yang mengatur posisi card
+/* Container utama yang membungkus card dan mengatur posisi secara flexbox */
+.container {
+  height: 100vh; /* penuhi tinggi layar */
+  display: flex; /* gunakan flexbox untuk pengaturan posisi */
+  justify-content: center; /* posisi horizontal di tengah */
+  align-items: center; /* posisi vertikal di tengah */
+  padding: 0; /* hilangkan padding default */
+  width: 100%;
+  position: relative; /* penting untuk konteks z-index */
+  z-index: 9999; /* supaya container dan card pasti di atas background jalan */
+
+  /* Card utama dengan efek 3D dan blur */
+  .card {
+    position: relative; /* agar child bisa menggunakan z-index */
+    width: 400px;
+    height: 550px;
+    border-radius: 15px; /* sudut membulat */
+    overflow: hidden; /* potong elemen yang keluar dari card */
+    display: flex;
+    flex-direction: column; /* tumpuk konten secara vertikal */
+    align-items: center; /* center horizontal isi card */
+    justify-content: center; /* center vertikal isi card */
+    box-shadow: 20px 20px 60px #b7e3f7, -20px -20px 60px #ffffff; /* efek bayangan 3D */
+    background: rgb(65, 68, 255); /* warna latar card */
+    z-index: 101; /* pastikan lebih tinggi dari .container anaknya */
+    padding: 20px; /* jarak isi ke tepi */
+    box-sizing: border-box; /* padding termasuk dalam ukuran width & height */
+
+    /* Background transparan blur di dalam card */
+    .bg {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 390px;
+      height: 540px;
+      background: rgba(255, 255, 255, 0.8); /* putih transparan */
+      backdrop-filter: blur(100px); /* efek blur */
+      border-radius: 10px;
+      overflow: hidden;
+      outline: 2px solid white; /* garis putih tipis pinggir */
+      z-index: 2; /* di bawah konten card */
+    }
+
+    /* Elemen blob untuk efek animasi di dalam card */
+    .blob {
+      position: absolute;
+      z-index: 1; /* paling bawah di antara elemen card */
+      top: 50%;
+      left: 50%;
+      width: 350px;
+      height: 450px;
+      border-radius: 50%; /* bentuk bulat */
+      background-color: #7bb5e4; /* warna biru lembut */
+      opacity: 1;
+      filter: blur(12px); /* blur untuk tampilan lembut */
+      animation: blob-bounce 5s infinite ease; /* animasi gerak blob */
+      transform: translate(-50%, -50%); /* pusatkan blob tepat di tengah */
+    }
+
+    /* Konten teks di dalam card */
+    .content {
+      position: relative; /* pastikan di atas .bg dan .blob */
+      z-index: 3; /* paling atas di antara elemen card */
+      text-align: center;
+      color: #333; /* warna teks gelap */
+    }
+
+    /* Definisi animasi blob-bounce */
+    /* Animasi membuat blob bergerak mengikuti pola kotak */
+    @keyframes blob-bounce {
+      0% {
+        transform: translate(-100%, -100%) translate3d(0, 0, 0);
+      }
+      25% {
+        transform: translate(-100%, -100%) translate3d(100%, 0, 0);
+      }
+      50% {
+        transform: translate(-100%, -100%) translate3d(100%, 100%, 0);
+      }
+      75% {
+        transform: translate(-100%, -100%) translate3d(0, 100%, 0);
+      }
+      100% {
+        transform: translate(-100%, -100%) translate3d(0, 0, 0);
+      }
+    }
+  }
+}
+
+//untuk card sampai sini //
+// akhir Card login dengan efek 3D dan blur
+
+//remmember me 
+/* Tambahan styling */
+
+
+//akhir remmerber me
+
+
+/* Kontainer utama konten login username dan pasword */
+.content {
+  position: relative;           // Supaya bisa atur layering z-index
+  z-index: 3;                  // Pastikan konten ini di atas elemen lain yang mungkin ada
+  text-align: center;          // Teks rata tengah
+  color: #333;                 // Warna teks abu gelap
+  width: 100%;                 // Lebar penuh kontainer
+}
+
+/* Judul utama pada konten login */
+.content h2 {
+  margin-bottom: 20px;         // Jarak bawah antara judul dan elemen selanjutnya
+  font-size: 22px;             // Ukuran font judul
+  color: #333;                 // Warna teks judul
+}
+
+/* Styling form login */
+form {
+  display: flex;               // Gunakan flexbox
+  flex-direction: column;      // Susun elemen secara vertikal
+  gap: 20px;                  // Jarak antar elemen form (input dan tombol)
+  align-items: center;         // Rata tengah elemen dalam form
+}
+
+/* Kontainer untuk input dengan label melayang */
+.input-container {
+  position: relative;          // Agar label bisa diposisikan absolut relatif ke sini
+  width: 250px;                // Lebar container input (sesuaikan dengan lebar input)
+  color: #ffffff;                 // Warna teks untuk label dan input
+  
+  //icon untuk username dan password
+  .icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  color: #4d3ea3;
+  cursor: pointer;
+  z-index: 2;
+  &.toggle-password {
+    cursor: pointer;
+    user-select: none;
+    padding: 0 3px;
+   }
+  }
+
+}
+
+/* Style input */
+.input-container input {
+  width: 100%;                // Lebar input memenuhi container
+  height: 45px;               // Tinggi input
+  padding: 0 10px;            // Padding kiri dan kanan 10px, atas bawah 0
+  border: none;               // Hilangkan border bawaan
+  border-radius: 8px;         // Sudut membulat
+  background: #87c4fcf4;  // Background putih transparan
+  backdrop-filter: blur(6px); // Efek blur untuk background (kaca buram)
+  font-size: 14px;            // Ukuran font input
+  outline: none;              // Hilangkan outline saat fokus
+  box-sizing: border-box;     // Padding dan border dihitung dalam width input
+  color: #333;                // Warna teks input
+  transition: box-shadow 0.3s ease;  // Transisi halus untuk bayangan saat fokus
+  box-shadow:                  // Bayangan lembut agar input terlihat mengambang
+    3px 3px 10px rgba(0,0,0,0.1),
+    -1px -1px 6px rgba(255, 255, 255, 0.4);
+}
+
+/* Label melayang */
+.input-container label {
+  position: absolute;          // Posisi absolut relatif ke container input
+  left: 10px;                 // Jarak dari kiri container
+  top: 13px;                  // Posisi vertikal default label
+  font-size: 15px;            // Ukuran font label
+  pointer-events: none;       // Label tidak bisa diklik, supaya klik diarahkan ke input
+  color: #333;                // Warna label abu gelap
+  transition: 0.3s ease all;  // Transisi smooth untuk perubahan posisi, ukuran, dan warna
+}
+
+/* Jika input fokus atau ada isinya, label naik */
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label {
+  top: -15px;                 // Label naik ke atas input
+  left: 5px;                  // Geser sedikit ke kiri
+  font-size: 12px;            // Ukuran font label mengecil
+  color: #5a189a;             // Warna label jadi ungu saat aktif/fokus
+  background: #ffffff;          // Background putih supaya label terbaca jelas
+  padding: 0 4px;             // Padding kiri dan kanan agar tidak menempel ke teks
+  border-radius: 4px;         // Sudut membulat untuk background label
+}
+
+/* Fokus input tambah efek bayangan */
+.input-container input:focus {
+  box-shadow:
+    3px 3px 10px rgba(0,0,0,0.2),      // Bayangan luar lebih gelap
+    -1px -1px 6px rgba(255, 255, 255, 0.6),  // Bayangan luar putih lebih terang
+    inset 3px 3px 10px rgba(0,0,0,0.1), // Bayangan dalam lembut
+    inset -1px -1px 6px rgba(255, 255, 255, 0.6); // Bayangan dalam putih terang
+}
+//akhir dari box isi login dan username
+
+/* Styling tombol dengan efek dari Uiverse.io */
+/* Gaya utama tombol di dalam elemen form */
+form button {
+  display: inline-block;               /* Biar tombol bisa diatur lebarnya tapi masih inline */
+  width: 150px;                        /* Lebar tombol 150px */
+  height: 50px;                       /* Tinggi tombol 50px */
+  border-radius: 10px;                 /* Sudut tombol dibulatkan 10px */
+  border: 1px solid #3c3ed6;           /* Border tipis warna biru tua */
+  position: relative;                  /* Biar pseudo-elemen bisa absolute terhadap tombol ini */
+  overflow: hidden;                   /* Sembunyikan bagian pseudo-elemen yang keluar tombol */
+  transition: all 0.3s ease-in-out;    /* Animasi transisi halus untuk perubahan apapun */
+  z-index: 1;                         /* Pastikan tombol ada di atas pseudo-elemen */
+  background: transparent;             /* Background transparan supaya efek pseudo-elemen terlihat */
+  cursor: pointer;                    /* Cursor jadi pointer pas hover, tanda klikable */
+  align-self: center;                  /* Kalau dalam flex container, tombol di tengah */
+  font-weight: bold;                   /* Tulisan tombol tebal */
+  
+  /* Bayangan ringan default */
+  box-shadow: 0 4px 8px rgba(132, 127, 222, 0.15);
+}
+
+/* Pseudo-elemen ::before dan ::after untuk efek visual di kiri dan kanan tombol */
+form button::before,
+form button::after {
+  content: '';                         /* Bikin elemen kosong */
+  position: absolute;                  /* Posisi absolute supaya bisa diatur bebas */
+  top: 0;                             /* Dari atas tombol */
+  width: 0;                           /* Awalnya lebar 0 (nggak keliatan) */
+  height: 100%;                      /* Tinggi sesuai tombol */
+  transform: skew(15deg);             /* Efek miring biar terlihat dinamis */
+  transition: all 0.5s;               /* Transisi halus saat hover */
+  overflow: hidden;                   /* Sembunyikan konten yang keluar */
+  z-index: -1;                       /* Posisikan di belakang tombol */
+}
+
+/* Pseudo-elemen sebelah kiri */
+form button::before {
+  left: -10px;                        /* Sedikit keluar dari sisi kiri tombol */
+  background: #87c4fcf4;                /* Warna biru muda buat highlight kiri */
+}
+
+/* Pseudo-elemen sebelah kanan */
+form button::after {
+  right: -10px;                       /* Sedikit keluar dari sisi kanan tombol */
+  background: #87c4fcf4;                /* Warna ungu medium buat highlight kanan */
+}
+
+/* Saat tombol di hover */
+form button:hover::before,
+form button:hover::after {
+  width: 58%;                        /* Lebar pseudo-elemen melebar jadi 58% tombol */
+}
+
+/* Gaya teks dalam tombol saat hover */
+form button:hover span {
+  color: white;                      /* Teks jadi putih biar kontras dengan background */
+  transition: color 0.5s ease-in;    /* Transisi warna teks halus */
+}
+
+/* Gaya teks default */
+form button span {
+  color: #5b9cf8;                     /* Warna teks default hitam */
+  font-size: 18px;                  /* Ukuran font 18px */
+  transition: color 0.5s ease-in;   /* Transisi warna teks saat berubah */
+  display: inline-block;            /* Biar teks bisa diatur dengan baik */
+}
+
+/* Efek saat tombol diklik (active) */
+form button:active {
+  transform: scale(0.6);             /* Tombol sedikit mengecil seperti ditekan */
+  filter: brightness(0.7);            /* Tombol jadi sedikit lebih gelap */
+  
+  /* Bayangan hitam tegas di sekitar tombol saat klik */
+  box-shadow: 0 0 50px 20px #87c4fcf4;
+}
+
+// tombol masuk berakhir disini
+
+// tombol bagian kanan atas tiga garis
+
+// =========================
+// Tombol Setting/Back Morph Kanan Atas
+// =========================
+.setting-btn {
+  width: 45px;                      // Lebar tombol
+  height: 45px;                     // Tinggi tombol
+  display: flex;                    // Flexbox untuk center
+  flex-direction: column;           // Bar vertikal
+  align-items: center;              // Center horizontal
+  justify-content: center;          // Center vertikal
+  gap: 6px;                         // Jarak antar bar
+  background-color: #6d95f8;        // Warna utama tombol (biru ungu)
+  border-radius: 10px;              // Pojok tombol membulat
+  cursor: pointer;                  // Cursor pointer
+  border: none;                     // Hilangkan border default
+  box-shadow: 0 0 0 2px #d4d1ff;    // Shadow lembut
+  position: fixed;                  // Tetap di kanan atas layar
+  top: 22px;                        // Jarak atas
+  right: 28px;                      // Jarak kanan
+  z-index: 2147483647;              // Supaya selalu di atas
+  overflow: hidden;                 // Isi tidak keluar box
+  transition: background 0.23s, box-shadow 0.2s, color 0.2s;
+  font-size: 0;                     // Hilangkan spasi di dalam flex
+
+  // Animasi bounce saat diklik
+  &.bounce {
+    animation: btn-bounce 0.40s cubic-bezier(0.34,1.56,0.64,1) 1;
+  }
+}
+
+// ===== Keyframes bounce effect =====
+@keyframes btn-bounce {
+  0% { transform: scale(1);}
+  30% { transform: scale(1.16,0.89);}
+  55% { transform: scale(0.93,1.08);}
+  80% { transform: scale(1.05,0.97);}
+  100% { transform: scale(1);}
+}
+
+// ===== Bar Hamburger (Animasi morphable) =====
+.bar {
+  width: 50%;                         // Setengah dari tombol
+  height: 2px;                        // Tipis
+  background-color: rgb(229, 229, 229); // Abu terang
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 2px;
+  opacity: 1;
+  transform: scaleX(1);
+  transition: opacity 0.18s, transform 0.19s;
+}
+
+// Titik animasi di bar
+.bar::before {
+  content: "";
+  width: 2px;
+  height: 2px;
+  background-color: #75acff;       // Biru terang
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  transition: all 0.3s;
+  box-shadow: 0 0 5px #fff, 0 0 8px #6fc3ff;
+}
+// Dot posisi awal
+.bar1::before { transform: translateX(-4px);}
+.bar2::before { transform: translateX(4px);}
+// Hover: dot animasi berlawanan arah
+.setting-btn:hover .bar1::before { transform: translateX(4px);}
+.setting-btn:hover .bar2::before { transform: translateX(-4px);}
+
+// ==== Sembunyikan/morph bar saat showFloatingCard ====
+.setting-btn .bar {
+  // Tips morph (jika mau hilang smooth):
+  // pakai binding di HTML: [ngClass]="{'hide-bar': showFloatingCard}"
+}
+.hide-bar {
+  opacity: 0 !important;
+  transform: scaleX(0.2) !important;
+}
+
+// ====== Back Icon Style (arrow-back-outline) ======
+.setting-btn ion-icon,
+.setting-btn .icon-back {
+  font-size: 28px;
+  color: #fff !important;                  // Putih
+  text-shadow: 0 0 12px #6fc3ff, 0 0 4px #fff; // Glow biru+putih
+  filter: drop-shadow(0 0 8px #72e1ff);    // Neon glow
+  opacity: 1 !important;
+  transition: opacity 0.2s, color 0.19s;
+  margin: 0 auto;
+  display: block;
+}
+
+// ===== Responsive =====
+@media (max-width: 600px) {
+  .setting-btn {
+    top: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    gap: 4px;
+    ion-icon, .icon-back { font-size: 20px !important; }
+  }
+}
+
+
+//floating button berakhir disini
+
+
+
+.floating-card {
+  position: fixed;
+  top: 64px; // Sesuaikan agar muncul di bawah tombol
+  right: 28px;
+  min-width: 240px; // Ukuran min card
+  max-width: 320px;
+  background: linear-gradient(135deg, #c9e7ff 0%, #aab6ff 100%);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(60,60,120,0.11);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-40px);
+  transition: opacity 0.27s cubic-bezier(.5,1.7,.45,.93), transform 0.27s cubic-bezier(.5,1.7,.45,.93);
+  z-index: 2147483646;
+  padding: 20px 22px;
+  color: #262649;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.floating-card.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.floating-card .avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 7px;
+  border: 2px solid #a6b0ff;
+}
+.floating-card h4 {
+  margin: 0 0 4px 0;
+  font-size: 19px;
+  font-weight: 700;
+}
+.floating-card .desc {
+  font-size: 14px;
+  color: #5b6288;
+  text-align: center;
+}
+.floating-card .logout-btn {
+  margin-top: 10px;
+  padding: 7px 22px;
+  background: #845ef7;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.17s;
+}
+.floating-card .logout-btn:hover {
+  background: #282682;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .floating-card {
+    right: 4vw;
+    min-width: 60vw;
+    padding: 13px 10px;
+  }
+}
+
+

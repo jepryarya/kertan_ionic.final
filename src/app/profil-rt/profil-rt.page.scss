@@ -1,0 +1,175 @@
+/* Gaya khusus untuk halaman profil RT */
+
+ion-header {
+  ion-toolbar {
+    --background: var(--ion-color-primary, #3880ff);
+    color: var(--ion-color-primary-contrast, #fff);
+  }
+  ion-title {
+    color: var(--ion-color-primary-contrast, #fff);
+  }
+  ion-back-button {
+    --color: var(--ion-color-primary-contrast, #fff);
+  }
+}
+
+ion-content {
+  --background: var(--ion-color-step-50, #f8f8f8); /* Warna latar belakang halaman */
+}
+
+.rt-card-container {
+  max-width: 500px;
+  margin: 20px auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Tambahkan shadow pada container card */
+  border-radius: 10px; /* Rounded corners untuk container */
+  overflow: hidden; /* Pastikan konten tidak meluber */
+}
+
+ion-card {
+  --background: var(--ion-color-light, #ffffff);
+  border-radius: 10px; /* Sesuaikan dengan container */
+  box-shadow: none; /* Hapus shadow default Ionic jika container sudah punya */
+}
+
+.rt-profile-avatar {
+  width: 120px;
+  height: 120px;
+  --border-radius: 50%; /* Membuat avatar bundar */
+  margin: 0 auto;
+  border: 4px solid var(--ion-color-primary, #3880ff); /* Border warna primary */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow untuk avatar */
+}
+
+.rt-profile-avatar img {
+  object-fit: cover; /* Memastikan gambar mengisi area avatar */
+  width: 100%;
+  height: 100%;
+}
+
+ion-card-header {
+  padding-bottom: 0;
+}
+
+ion-card-title {
+  font-size: 1.8em;
+  font-weight: 700;
+  margin-top: 10px;
+  color: var(--ion-color-dark, #222);
+}
+
+ion-card-subtitle {
+  color: var(--ion-color-medium, #92949c);
+  margin-top: 5px;
+  font-size: 1.1em;
+}
+
+ion-card-content {
+  padding-top: 0;
+}
+
+ion-list {
+  background: transparent; /* Pastikan background list transparan */
+}
+
+ion-item {
+  --background: transparent;
+  --border-color: var(--ion-color-step-100, #eee);
+  --highlight-background: transparent;
+  margin-bottom: 10px; /* Jarak antar item form */
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Sedikit bayangan pada item */
+}
+
+ion-input, ion-textarea {
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  color: var(--ion-color-dark, #222);
+}
+
+ion-toggle {
+  --background: var(--ion-color-light, #f4f5f8);
+  --background-checked: var(--ion-color-primary, #3880ff);
+  --handle-background: var(--ion-color-step-50, #fff);
+  --handle-background-checked: var(--ion-color-primary-contrast, #fff);
+}
+
+ion-button {
+  margin-top: 20px;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 10px rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.3);
+}
+
+.loading-spinner,
+.error-message,
+.no-data-message {
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+}
+
+.loading-spinner ion-spinner {
+  font-size: 3em; /* Ukuran spinner */
+  color: var(--ion-color-primary);
+}
+
+.loading-spinner p,
+.error-message p,
+.no-data-message p {
+  color: var(--ion-color-medium, #92949c);
+  margin-top: 10px;
+  font-size: 1.1em;
+}
+
+.error-message ion-icon {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.no-data-message ion-icon {
+  font-size: 3em;
+  color: var(--ion-color-medium, #92949c);
+  margin-bottom: 10px;
+}
+
+/* --- Gaya untuk Tombol Google Maps dengan Efek 3D --- */
+.map-button-3d {
+  position: relative;
+  overflow: hidden;
+  --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-primary-shade));
+  --background-activated: linear-gradient(135deg, var(--ion-color-primary-shade), var(--ion-color-primary));
+  --color: white;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-out;
+
+  /* Efek 3D */
+  transform: translateY(0);
+  box-shadow: 0 6px 0 0 var(--ion-color-primary-shade, #3171e0), /* Bayangan bawah yang memberikan kedalaman */
+              0 2px 5px rgba(0, 0, 0, 0.2); /* Bayangan umum */
+  
+  &:active {
+    /* Saat ditekan */
+    transform: translateY(3px); /* Tombol sedikit masuk ke dalam */
+    box-shadow: 0 3px 0 0 var(--ion-color-primary-shade, #3171e0),
+                0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.no-map-link {
+  --background: var(--ion-color-light);
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 15px;
+  ion-label {
+    p {
+      color: var(--ion-color-medium);
+      font-style: italic;
+    }
+    ion-icon {
+      color: var(--ion-color-medium);
+      margin-right: 5px;
+    }
+  }
+}

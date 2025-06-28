@@ -1,0 +1,139 @@
+:host {
+  --ion-color-primary: #007bff;
+  --ion-color-primary-rgb: 0, 123, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #006ae0;
+  --ion-color-primary-tint: #1a8cff;
+}
+
+/* Toolbar header tetap biru */
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: white;
+}
+
+/* Judul di dalam toolbar */
+ion-title {
+  color: white;
+}
+
+/* Warna background seluruh halaman dan overscroll effect */
+ion-content {
+  --background: #e6f0fa; /* Light blue background matching the second image */
+  background-color: #e6f0fa; /* Fallback untuk background */
+}
+
+/* Form container */
+.ion-padding {
+  background: #ffffff; /* White background for the form */
+  border-radius: 12px;
+  padding: 16px;
+  margin: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Shadow lebih halus */
+}
+
+/* Styling for ion-item to match the light theme */
+ion-item {
+  --background: #ffffff; /* Latar belakang ion-item putih */
+  --color: #333333;
+  --border-width: 0; /* Hapus semua border default */
+  --inner-border-width: 0; /* Hapus border internal */
+  --padding-start: 0; /* Hapus padding default di awal item */
+  --padding-end: 0; /* Hapus padding default di akhir item */
+  --detail-icon-color: #999999; /* Pastikan warna icon detail tidak gelap */
+  --highlight-background: transparent; /* Pastikan tidak ada highlight gelap saat disentuh */
+  box-shadow: none; /* Hapus shadow jika ada di item */
+  border-bottom: 2px solid #c8c3c3; /* Tambahkan border bawah manual untuk pemisah antar item yang terang */
+}
+
+/* Untuk item terakhir di list, hilangkan border bawahnya agar tidak ada garis di akhir form */
+ion-list ion-item:last-child {
+  border-bottom: none;
+}
+
+/* Input dan textarea text color serta border */
+ion-input {
+  --background: #ffffff; /* PASTIKAN INPUT BACKGROUND PUTIH */
+  --color: #333333;
+  --placeholder-color: #999999;
+  --highlight-color-focused: var(--ion-color-primary); /* Warna highlight saat fokus */
+  --highlight-color-valid: var(--ion-color-primary); /* Warna highlight saat valid */
+  --highlight-color-invalid: #d9534f; /* Warna highlight saat invalid */
+  --border-color: #e0e0e0; /* Border warna abu-abu terang */
+  --padding-bottom: 8px; /* Sesuaikan padding agar border terlihat */
+}
+
+ion-textarea {
+  --background: #ffffff; /* PASTIKAN TEXTAREA BACKGROUND PUTIH */
+  --color: #333333;
+  --placeholder-color: #999999;
+  --highlight-color-focused: var(--ion-color-primary);
+  --highlight-color-valid: var(--ion-color-primary);
+  --highlight-color-invalid: #d9534f;
+  --border-color: #e0e0e0; /* Border warna abu-abu terang */
+  --padding-bottom: 8px;
+}
+
+/* Label color for inputs and textareas */
+ion-input ion-label,
+ion-textarea ion-label {
+  color: #333333;
+}
+
+/* Pesan validasi */
+.validation-message {
+  color: #d9534f;
+  font-size: 0.9em;
+  margin: 4px 16px 0 16px;
+}
+
+/* Tombol utama */
+ion-button {
+  --background: var(--ion-color-primary);
+  --color: white;
+  --border-radius: 8px;
+  margin-top: 16px;
+  --box-shadow: none; /* Hapus shadow pada tombol */
+}
+
+/* Tombol saat disabled */
+ion-button[disabled] {
+  --background: #cccccc; /* Abu-abu terang untuk disabled */
+  --color: #666666; /* Teks abu-abu untuk disabled */
+}
+
+/* Pratinjau gambar */
+img {
+  border-color: var(--ion-color-primary);
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+  border: 6px solid #bb5e5e; /* Border gambar abu-abu terang */
+  margin-top: 8px;
+}
+
+/* Menghilangkan garis hitam pada ion-list jika ada */
+ion-list {
+  --ion-background-color: transparent; /* Pastikan background list transparan */
+  --ion-border-color: transparent; /* Hilangkan border pada list */
+  background: transparent; /* Pastikan juga background HTML list transparan */
+}
+
+/* Efek ripple saat disentuh */
+ion-item.ion-activatable {
+  --ripple-color: rgba(0, 0, 0, 0.05); /* Ripple effect yang sangat tipis dan terang */
+}
+
+/* Jika masih ada elemen lain yang gelap, bisa di-target di sini. */
+/* Contoh: Jika ada card atau komponen lain yang belum diatur */
+ion-card {
+  --background: #ffffff;
+  box-shadow: none; /* Hapus shadow default pada card */
+}
+
+/* Pastikan scrollbar tidak memiliki warna gelap yang terlihat jika ada */
+::-webkit-scrollbar {
+  width: 0 !important;
+  display: none;
+}

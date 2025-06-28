@@ -1,0 +1,111 @@
+<ion-header>
+  <ion-toolbar class="admin-navbar-top">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin-menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Data Tamu</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Memuat data tamu...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="ion-text-center ion-padding">
+    <ion-text color="danger">
+      <p>{{ errorMessage }}</p>
+    </ion-text>
+    <ion-button (click)="onRetryButtonClick()">Coba Lagi</ion-button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && tamuList.length > 0" class="table-container responsive-table-wrapper">
+    <div class="scrollable-table"> <ion-grid class="tamu-table">
+        <ion-row class="table-header">
+          <ion-col size="auto">ID</ion-col>
+          <ion-col>Nama</ion-col>
+          <ion-col>No. Identitas</ion-col>
+          <ion-col>Foto KTP</ion-col>
+          <ion-col>Alamat Asal</ion-col>
+          <ion-col>Ke Rumah</ion-col>
+          <ion-col>Alasan</ion-col>
+          <ion-col>Waktu Masuk</ion-col>
+          <ion-col>Waktu Keluar</ion-col>
+          <ion-col>Status</ion-col>
+          <ion-col class="action-col-header">Aksi</ion-col>
+        </ion-row>
+
+        <ion-row *ngFor="let tamu of tamuList" class="table-row">
+          <ion-col size="auto">{{ tamu.id }}</ion-col>
+          <ion-col>{{ tamu.nama }}</ion-col>
+          <ion-col>{{ tamu.no_identitas }}</ion-col>
+
+          <ion-col>
+            <img *ngIf="tamu.foto_ktp_url" [src]="tamu.foto_ktp_url" alt="Foto KTP" class="ktp-thumbnail" />
+            <span *ngIf="!tamu.foto_ktp_url">-</span>
+          </ion-col>
+
+          <ion-col>{{ tamu.alamat_asal }}</ion-col>
+          <ion-col>{{ tamu.ke_rumah }}</ion-col>
+          <ion-col>{{ tamu.alasan_kunjungan }}</ion-col>
+          <ion-col>{{ tamu.waktu_masuk | date:'dd MMM yyyy HH:mm' }}</ion-col>
+          <ion-col>{{ tamu.waktu_keluar ? (tamu.waktu_keluar | date:'dd MMM yyyy HH:mm') : '-' }}</ion-col>
+          <ion-col>
+            <span *ngIf="editingRowId !== tamu.id">{{ tamu.status }}</span>
+            <ion-select *ngIf="editingRowId === tamu.id" [(ngModel)]="tamu.status" interface="popover" class="inline-edit-select">
+              <ion-select-option value="Masuk">Masuk</ion-select-option>
+              <ion-select-option value="Keluar">Keluar</ion-select-option>
+            </ion-select>
+          </ion-col>
+
+          <ion-col class="action-col">
+            <div *ngIf="editingRowId !== tamu.id" class="action-buttons-group">
+              <ion-button size="small" color="primary" (click)="startEditing(tamu.id)">
+                Edit Status
+              </ion-button>
+              <ion-button
+                *ngIf="tamu.status === 'Masuk'"
+                size="small"
+                color="warning"
+                (click)="updateTamuStatus(tamu, 'Keluar')"
+              >
+                Set Keluar
+              </ion-button>
+              <ion-button
+                *ngIf="tamu.status === 'Keluar'"
+                size="small"
+                color="success"
+                (click)="updateTamuStatus(tamu, 'Masuk')"
+              >
+                Set Masuk
+              </ion-button>
+              <ion-button
+                size="small"
+                color="danger"
+                (click)="deleteTamu(tamu.id, tamu.nama)"
+              >
+                Hapus
+              </ion-button>
+            </div>
+
+            <div *ngIf="editingRowId === tamu.id" class="action-buttons-group">
+              <ion-button size="small" color="success" (click)="saveInlineEdit(tamu)">
+                Simpan
+              </ion-button>
+              <ion-button size="small" color="medium" (click)="cancelInlineEdit()">
+                Batal
+              </ion-button>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && tamuList.length === 0" class="ion-text-center ion-padding">
+    <ion-text color="medium">
+      <p>Tidak ada data tamu ditemukan.</p>
+    </ion-text>
+  </div>
+</ion-content>

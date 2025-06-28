@@ -1,0 +1,55 @@
+<ion-content>
+
+  <div
+    *ngIf="showFloatingCard"
+    class="floating-overlay"
+    (click)="closeFloatingCard()"
+    style="z-index:2147483646"
+  >
+    <div class="floating-card" (click)="$event.stopPropagation()">
+      <img src="assets/img/profile.jpg" class="avatar" />
+      <h4>Halo, Bray!</h4>
+      <p class="desc">Isi bebas di sini, klik luar buat nutup!</p>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="blob"></div>
+      <div class="bg"></div>
+      <div class="content">
+        <div class="login-background">
+          <div class="bg-blur"></div>
+          <div class="logo-animasi"></div>
+        </div>
+        <h2>Selamat Datang</h2>
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <div class="input-container">
+            <input
+              type="email" formControlName="email" placeholder=" "
+              (input)="checkInput('email')" [class.filled]="emailFilled" required />
+            <label [class.floating]="emailFilled">Email</label> <span class="icon">
+              <ion-icon name="person-circle-outline"></ion-icon>
+            </span>
+          </div>
+          <div class="input-container">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder=" "
+              (input)="checkInput('password')"
+              [class.filled]="passwordFilled"
+              required />
+            <label [class.floating]="passwordFilled">Password</label>
+            <span class="icon toggle-password" (click)="togglePasswordVisibility()" tabindex="0">
+              <ion-icon [name]="showPassword ? 'lock-open-outline' : 'lock-closed-outline'"></ion-icon>
+            </span>
+          </div>
+          <button type="submit"><span>LOGIN</span></button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="background-jalan"></div>
+</ion-content>

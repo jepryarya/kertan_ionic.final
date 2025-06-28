@@ -1,0 +1,264 @@
+<ion-header [translucent]="true" class="blue-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin-menu"></ion-back-button>
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Grafik Tamu</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Tabel Laporan Tamu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="ion-padding">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Laporan Harian</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Pilih Tanggal:</ion-label>
+          <ion-text slot="end">{{ selectedDate | date:'dd MMMMEEEE' }}</ion-text>
+
+          <ion-datetime-button datetime="dailyDate"></ion-datetime-button>
+
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime
+                id="dailyDate"
+                display-format="DD MMMMEEEE"
+                picker-format="DD MMMMEEEE"
+                [(ngModel)]="selectedDate"
+                (ionChange)="onDateChange()"
+                presentation="date"
+                min="1990-01-01"
+                max="2150-12-31"
+              ></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+
+        <div
+          *ngIf="laporanHarian.data.length > 0; else noDailyData"
+          class="table-container"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Nama Tamu</th>
+                <th>Waktu Masuk</th>
+                <th>Waktu Keluar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tamu of laporanHarian.data; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ tamu.nama_tamu }}</td>
+                <td>{{ tamu.waktu_masuk | date:'shortTime' }}</td>
+                <td>
+                  {{ tamu.waktu_keluar ? (tamu.waktu_keluar | date:'shortTime') : '-' }}
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="total-label">
+                  Total Keseluruhan Tamu Harian:
+                </td>
+                <td class="total-value">{{ laporanHarian.total_tamu }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <ng-template #noDailyData>
+          <ion-item class="ion-text-center">
+            <ion-label>Tidak ada data harian untuk tanggal ini.</ion-label>
+          </ion-item>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Rekap Mingguan</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div
+          *ngIf="rekapMingguan.data.length > 0; else noWeeklyData"
+          class="table-container"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>Minggu ke-</th>
+                <th>Total Tamu Masuk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of rekapMingguan.data">
+                <td>{{ item.minggu_ke }}</td>
+                <td>{{ item.total_tamu_mingguan }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="total-label">Total Keseluruhan Tamu Mingguan:</td>
+                <td class="total-value">{{ totalTamuMingguan }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <ng-template #noWeeklyData>
+          <ion-item class="ion-text-center">
+            <ion-label>Tidak ada data rekap mingguan.</ion-label>
+          </ion-item>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Rekap Bulanan</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Pilih Tahun:</ion-label>
+          <ion-datetime-button datetime="monthlyYear"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime
+                id="monthlyYear"
+                display-format="YYYY"
+                picker-format="YYYY"
+                [(ngModel)]="selectedYearMonthly"
+                (ionChange)="onMonthlyYearChange()"
+                presentation="year"
+                min="1990"
+                max="2150"
+              ></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Pilih Bulan:</ion-label>
+          <ion-datetime-button datetime="monthlyMonth"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime
+                id="monthlyMonth"
+                display-format="MMMM"
+                picker-format="MMMM"
+                [(ngModel)]="selectedMonth"
+                (ionChange)="onMonthlyMonthChange()"
+                presentation="month"
+              ></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+
+        <div
+          *ngIf="filteredRekapBulanan.length > 0; else noMonthlyData"
+          class="table-container"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>Bulan</th>
+                <th>Total Tamu Masuk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of filteredRekapBulanan">
+                <td>{{ item.bulan_nama }}</td>
+                <td>{{ item.total_tamu_masuk }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="total-label">Total Tamu Bulanan:</td>
+                <td class="total-value">{{ totalTamuPerSelectedMonth }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <ng-template #noMonthlyData>
+          <ion-item class="ion-text-center">
+            <ion-label
+              >Tidak ada data rekap bulanan untuk bulan dan tahun ini.</ion-label
+            >
+          </ion-item>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Rekap Tahunan</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Pilih Tahun:</ion-label>
+          <ion-datetime-button datetime="yearlyYear"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime
+                id="yearlyYear"
+                display-format="YYYY"
+                picker-format="YYYY"
+                [(ngModel)]="selectedYear"
+                (ionChange)="onYearlyYearChange()"
+                presentation="year"
+                min="1990"
+                max="2150"
+              ></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+
+        <div
+          *ngIf="rekapTahunan.data.length > 0; else noYearlyData"
+          class="table-container"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>Tahun</th>
+                <th>Total Tamu Masuk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of rekapTahunan.data">
+                <td>{{ item.tahun }}</td>
+                <td>{{ item.total_tamu_masuk }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="total-label">Total Keseluruhan Tamu Tahunan:</td>
+                <td class="total-value">{{ totalTamuTahunan }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <ng-template #noYearlyData>
+          <ion-item class="ion-text-center">
+            <ion-label
+              >Tidak ada data rekap tahunan untuk tahun ini.</ion-label
+            >
+          </ion-item>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

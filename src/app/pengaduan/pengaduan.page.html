@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/user-menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pengaduan Warga</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-segment [(ngModel)]="selectedSegment" value="ajukan">
+    <ion-segment-button value="ajukan">
+      <ion-label>Ajukan Baru</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="riwayat" (ionSelect)="loadPengaduanHistory()">
+      <ion-label>Riwayat Pengaduan</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div *ngIf="selectedSegment === 'ajukan'">
+    <ion-text class="ion-margin-top">
+      <h2>Kategori Pengaduan <span style="color: red;">*</span></h2>
+    </ion-text>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" *ngFor="let kategori of kategoris">
+          <div
+            class="kategori-card"
+            [class.selected]="selectedKategori === kategori.nama"
+            (click)="selectKategori(kategori.nama)"
+          >
+            <ion-icon [name]="kategori.icon"></ion-icon>
+            <ion-label>{{ kategori.nama }}</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-item class="ion-margin-top">
+      <ion-label position="floating">Isi Pengaduan <span style="color: red;">*</span></ion-label>
+      <ion-textarea
+        rows="6"
+        cols="20"
+        placeholder="Jelaskan detail pengaduan Anda di sini..."
+        [(ngModel)]="isiPengaduan"
+      ></ion-textarea>
+    </ion-item>
+
+    <ion-item class="ion-margin-top">
+      <ion-label>Lampirkan Foto (Opsional)</ion-label>
+      <input type="file" id="fotoLaporanInput" (change)="onFileChange($event)" accept="image/jpeg,image/png,image/jpg">
+    </ion-item>
+
+    <div *ngIf="fotoLaporanPreview" class="foto-preview-container ion-margin-top">
+      <img [src]="fotoLaporanPreview" alt="Foto Laporan Preview" class="foto-preview">
+      <ion-button size="small" fill="clear" color="danger" (click)="clearFotoLaporan()">
+        <ion-icon name="close-circle"></ion-icon>
+        Hapus Foto
+      </ion-button>
+    </div>
+
+    <ion-button expand="block" class="ion-margin-top" (click)="submitPengaduan()">
+      Kirim Pengaduan
+    </ion-button>
+  </div>
+
+  <div *ngIf="selectedSegment === 'riwayat'">
+    <ion-text class="ion-margin-top">
+      <h2>Riwayat Pengaduan Saya</h2>
+    </ion-text>
+
+    <ion-segment [(ngModel)]="selectedStatusFilter" (ionChange)="filterStatusChanged()" class="ion-margin-bottom">
+      <ion-segment-button value="menunggu">
+        <ion-label>Menunggu</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="selesai">
+        <ion-label>Selesai</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="ditolak">
+        <ion-label>Ditolak</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="semua">
+        <ion-label>Semua</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <ion-card *ngIf="isLoadingHistory">
+      <ion-card-content class="ion-text-center">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Memuat riwayat...</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="!isLoadingHistory && pengaduans.length === 0">
+      <ion-card-header>
+        <ion-card-title>Tidak Ada Pengaduan</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Tidak ada pengaduan dengan status "{{ getStatusLabel(selectedStatusFilter) }}" saat ini.
+      </ion-card-content>
+    </ion-card>
+
+    <ion-list *ngIf="!isLoadingHistory && pengaduans.length > 0">
+      <ion-card *ngFor="let pengaduan of pengaduans" class="ion-margin-bottom">
+        <ion-card-header>
+          <ion-card-subtitle>
+            {{ formatDate(pengaduan.created_at) }}
+          </ion-card-subtitle>
+          <ion-card-title>{{ pengaduan.kategori }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>{{ pengaduan.isi_pengaduan.substring(0, 100) }}<span *ngIf="pengaduan.isi_pengaduan.length > 100">...</span></p>
+          <ion-badge [color]="getStatusColor(pengaduan.status)" class="ion-margin-top">
+            {{ getStatusLabel(pengaduan.status) }}
+          </ion-badge>
+
+          <div *ngIf="pengaduan.foto_laporan_url" class="ion-margin-top">
+            <img [src]="pengaduan.foto_laporan_url" alt="Foto Laporan" class="riwayat-foto">
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+  </div>
+</ion-content>

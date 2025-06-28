@@ -1,0 +1,76 @@
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #007bff;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin-menu" color="light"></ion-back-button>
+    </ion-buttons>
+    <ion-title color="light">Profil Satpam</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar style="--background: #007bff;">
+      <ion-title size="large" color="light">Profil Satpam</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="satpam-card-container">
+    <div *ngIf="isLoading" class="loading-spinner">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Memuat profil satpam...</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <p>{{ errorMessage }}</p>
+      <ion-button (click)="getSatpamProfile()" expand="block" fill="outline" color="primary">Coba Lagi</ion-button>
+    </div>
+
+    <ion-card *ngIf="satpam && !isLoading && !errorMessage">
+      <ion-card-header>
+        <ion-avatar class="satpam-profile-avatar">
+          <ng-container *ngIf="satpam.foto_satpam; else noFoto">
+            <img [src]="satpam.foto_satpam" alt="Foto Satpam">
+          </ng-container>
+          <ng-template #noFoto>
+            <ion-icon name="person-circle-outline"></ion-icon>
+          </ng-template>
+        </ion-avatar>
+
+        <ion-card-title>{{ satpam.nama || 'Nama Satpam' }}</ion-card-title>
+        <ion-card-subtitle>Satpam</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-list lines="none">
+          <ion-item>
+            <ion-label>
+              <h3><ion-icon name="person-outline"></ion-icon> Nama:</h3>
+              <p>{{ satpam.nama || 'N/A' }}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>
+              <h3><ion-icon name="time-outline"></ion-icon> Shift:</h3>
+              <p>{{ satpam.shift || 'N/A' }}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>
+              <h3><ion-icon name="call-outline"></ion-icon> Nomor HP:</h3>
+              <p>{{ satpam.no_hp || 'N/A' }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <div *ngIf="!satpam && !isLoading && !errorMessage" class="no-data-message">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <p>Tidak ada data profil satpam yang tersedia.</p>
+      <ion-button (click)="getSatpamProfile()" expand="block" fill="outline" color="primary">Muat Ulang Data</ion-button>
+    </div>
+  </div>
+</ion-content>

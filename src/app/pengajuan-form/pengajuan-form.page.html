@@ -1,0 +1,130 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Pengajuan Surat</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/user-menu"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="header-content">
+    <ion-icon name="document-text-outline" class="header-icon"></ion-icon>
+    <h1 class="ion-text-center">Form Pengajuan Surat</h1>
+    <p class="ion-text-center">Silakan isi formulir pengajuan surat dengan lengkap.</p>
+  </div>
+
+  <ion-segment [(ngModel)]="activeTab" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="form">
+      <ion-icon name="add-circle-outline"></ion-icon>
+      <ion-label>Pengajuan Baru</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="riwayat">
+      <ion-icon name="time-outline"></ion-icon>
+      <ion-label>Riwayat</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div *ngIf="activeTab === 'form'">
+    <ion-card class="info-card">
+      <ion-card-content>
+        <div class="info-text">
+          <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+          <p>Lengkapi formulir di bawah ini untuk mengajukan surat ke kantor desa.</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="person-outline"></ion-icon>
+          Data Pemohon
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Nama Lengkap</ion-label>
+          <ion-input
+            [value]="userData?.name || 'Memuat...'"
+            readonly="true"
+            class="readonly-input">
+          </ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <form [formGroup]="pengajuanForm" (ngSubmit)="submitForm()">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="document-outline"></ion-icon>
+            Detail Pengajuan
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item>
+            <ion-label position="stacked">Jenis Surat <span class="required">*</span></ion-label>
+            <ion-select formControlName="jenis_surat" placeholder="Pilih Jenis Surat">
+              <ion-select-option *ngFor="let jenis of jenisSurat" [value]="jenis.value">{{ jenis.label }}</ion-select-option>
+            </ion-select>
+            <ion-text color="danger" *ngIf="pengajuanForm.get('jenis_surat')?.touched && pengajuanForm.get('jenis_surat')?.hasError('required')">
+              Jenis surat wajib diisi.
+            </ion-text>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Keterangan Tambahan (opsional)</ion-label>
+            <ion-textarea formControlName="keterangan" placeholder="Tambahkan detail lainnya jika perlu (misal: keperluan, tanggal diperlukan)"></ion-textarea>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ion-label position="stacked">Lampiran (PDF/JPG/PNG, Max 5MB)</ion-label>
+            <div class="file-input-wrapper">
+              <input type="file" #fileInput (change)="onFileSelected($event)" class="hidden-file-input" accept=".pdf, .jpg, .jpeg, .png">
+              <ion-button expand="block" fill="outline" (click)="fileInput.click()">
+                <ion-icon slot="start" name="attach-outline"></ion-icon>
+                {{ selectedFileName || 'Pilih File' }}
+              </ion-button>
+            </div>
+            <ion-button *ngIf="selectedFile" fill="clear" color="danger" (click)="removeFile()">
+              <ion-icon name="close-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-button expand="block" type="submit" [disabled]="pengajuanForm.invalid || !selectedFile">
+        <ion-icon slot="start" name="send"></ion-icon>
+        Ajukan Surat
+      </ion-button>
+    </form>
+  </div>
+
+  <div *ngIf="activeTab === 'riwayat'">
+    <ion-card class="info-card">
+      <ion-card-content>
+        <div class="info-text">
+          <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+          <p>Berikut adalah riwayat pengajuan surat Anda.</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div *ngIf="riwayatPengajuan.length === 0 && !isLoadingRiwayat" class="no-data-message ion-padding ion-text-center">
+      <ion-icon name="clipboard-outline"></ion-icon>
+      <p>Belum ada riwayat pengajuan surat.</p>
+    </div>
+
+    <ion-list *ngIf="riwayatPengajuan.length > 0">
+      <ion-item *ngFor="let item of riwayatPengajuan" detail="true" (click)="viewDetails(item)">
+        <ion-icon slot="start" [name]="getStatusIcon(item.status || 'menunggu')" [color]="getStatusColor(item.status || 'menunggu')"></ion-icon>
+        <ion-label>
+          <h2>{{ item.jenis_surat }}</h2>
+          <p>Diajukan pada: {{ item.diajukan_pada }}</p>
+          <p>Status: <ion-badge [color]="getStatusColor(item.status || 'menunggu')">{{ item.status_display }}</ion-badge></p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
